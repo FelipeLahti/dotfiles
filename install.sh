@@ -1,6 +1,4 @@
-chsh -s /bin/zsh
-echo "source ~/.dotfiles/dotfiles.sh" >> ~/.bash_profile
-echo "source ~/.dotfiles/dotfiles.sh" >> ~/.zshrc
-ln -s ~/.dotfiles/.gemrc ~/.gemrc
-ln -s ~/.dotfiles/.vimrc ~/.vimrc
-#Install vundle
+DOT_FILE_DIR=~/dotfiles
+
+brew bundle --file=$DOT_FILE_DIR/install/Brewfile
+brew bundle --file=$DOT_FILE_DIR/install/Caskfile
