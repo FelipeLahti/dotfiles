@@ -1,8 +1,10 @@
-tap "homebrew/cask-fonts"
-
-cask "docker"
-cask "firefox"
-cask "font-fira-code"
-cask "font-hack"
+cask "firefox@developer-edition"
 cask "google-chrome"
+cask "iterm2"
+cask "raycast"
+cask "slack"
+cask "rectangle"
+cask "spotify"
+cask "visual-studio-code"
+cask "zoom"
 
