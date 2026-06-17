@@ -11,5 +11,10 @@ window-save-state = always
 macos-option-as-alt = true
 confirm-close-surface = false
 
+# Shell integration: add sudo passthrough (cursor/title/path are already on by default).
+# Splits work out of the box: cmd+d / cmd+shift+d split, cmd+[ / cmd+] cycle,
+# cmd+alt+arrows navigate, cmd+ctrl+arrows resize — no keybinds needed here.
+shell-integration-features = cursor,sudo,title,path
+
 # Quick-terminal dropdown (toggle with the global keybind below)
 keybind = global:cmd+grave_accent=toggle_quick_terminal

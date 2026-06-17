@@ -73,14 +73,34 @@ export PATH="$(brew --prefix rustup)/bin:$PATH"
 
 # 7. Sensible macOS defaults --------------------------------------------------
 log "Applying macOS defaults…"
-defaults write NSGlobalDomain KeyRepeat -int 2
-defaults write NSGlobalDomain InitialKeyRepeat -int 15
+defaults write NSGlobalDomain KeyRepeat -int 1         # repeat rate, below slider min (~15ms)
+defaults write NSGlobalDomain InitialKeyRepeat -int 12 # delay before repeat, below slider min (~180ms)
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 defaults write com.apple.finder AppleShowAllFiles -bool true
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 defaults write com.apple.finder ShowPathbar -bool true
+
+# Dock behavior
 defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock show-recents -bool false
+defaults write com.apple.dock minimize-to-application -bool true   # windows fold into the app icon
+defaults write com.apple.dock autohide-delay -float 0              # no delay before the dock shows
+defaults write com.apple.dock autohide-time-modifier -float 0.25   # snappier show/hide animation
+
+# Dock layout: a lean, pinned set — launch everything else via Raycast/Spotlight.
+# dockutil makes this reproducible (plain `defaults` can't safely rewrite the dock plist).
+if command -v dockutil >/dev/null 2>&1; then
+  log "Setting dock layout…"
+  dockutil --no-restart --remove all >/dev/null 2>&1 || true
+  for app in "Ghostty" "Zed" "Google Chrome" "Obsidian" "Spotify" "System Settings"; do
+    if   [[ -d "/Applications/$app.app" ]];        then dockutil --no-restart --add "/Applications/$app.app" >/dev/null 2>&1
+    elif [[ -d "/System/Applications/$app.app" ]]; then dockutil --no-restart --add "/System/Applications/$app.app" >/dev/null 2>&1
+    else warn "dock: $app.app not found, skipping"; fi
+  done
+else
+  warn "dockutil not installed — skipping dock layout (run 'brew bundle' then re-run bootstrap)"
+fi
+
 killall Finder Dock 2>/dev/null || true
 
 # 8. Default browser ----------------------------------------------------------

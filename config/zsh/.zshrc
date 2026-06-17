@@ -16,7 +16,16 @@ fi
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=50000
 SAVEHIST=50000
-setopt SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_REDUCE_BLANKS INC_APPEND_HISTORY
+setopt SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_REDUCE_BLANKS HIST_VERIFY EXTENDED_HISTORY
+# SHARE_HISTORY already appends incrementally; HIST_VERIFY lets you edit a !-expansion
+# before running it; EXTENDED_HISTORY records timestamps.
+
+# ---- Shell options ----
+setopt EXTENDED_GLOB                                # **/ globs, ^negation, (qualifiers)
+setopt AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_SILENT    # `cd -<TAB>` browses a dir stack
+setopt INTERACTIVE_COMMENTS                         # allow `# comments` at the prompt
+setopt NO_BEEP
+# (GLOB_DOTS intentionally left off: it would make `rm *` match .env/.git etc.)
 
 # ---- Completions ----
 autoload -Uz compinit && compinit -d "$HOME/.zcompdump"
@@ -29,8 +38,31 @@ eval "$(mise activate zsh)"
 eval "$(starship init zsh)"
 source <(fzf --zsh)
 
+# ---- fzf UX (fd as the source, bat/eza previews, Catppuccin Mocha colors) ----
+export FZF_DEFAULT_COMMAND='fd --hidden --strip-cwd-prefix --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type=d --hidden --strip-cwd-prefix --exclude .git'
+export FZF_DEFAULT_OPTS="--height 40% --layout reverse --border --cycle
+  --preview-window 'right:60%:border-left'
+  --bind 'ctrl-/:toggle-preview'
+  --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8
+  --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc
+  --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers {} 2>/dev/null || eza --tree --color=always {} | head -200'"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always --level=2 {} | head -200'"
+
+# ---- fzf-tab (fuzzy completion menu; after compinit, before the widget-wrapping plugins) ----
+source "$BREW_PREFIX/share/fzf-tab/fzf-tab.zsh"
+zstyle ':completion:*' menu no                                   # hand the menu to fzf-tab
+zstyle ':completion:*:descriptions' format '[%d]'                # group headers fzf-tab shows
+zstyle ':fzf-tab:*' switch-group '<' '>'                         # `<`/`>` cycle completion groups
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza --tree --color=always --level=2 $realpath | head -200'
+zstyle ':fzf-tab:complete:z:*'  fzf-preview 'eza --tree --color=always --level=2 $realpath | head -200'
+
 # ---- Plugins ----
 source "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)   # suggest from completions too, not just history
+bindkey '^ ' autosuggest-accept                  # Ctrl-Space accepts the inline suggestion
 source "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 # ---- 1Password SSH agent ----
@@ -78,9 +110,16 @@ alias gl="git pull"
 export EDITOR="zed --wait"
 export VISUAL="$EDITOR"
 
+# ---- bat / man (syntax-highlighted pager, Catppuccin Mocha to match the theme) ----
+export BAT_THEME="Catppuccin Mocha"
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export MANROFFOPT="-c"   # avoid escape-sequence artifacts when bat renders man pages
+
 # ---- zoxide ----
-# Initialize last: zoxide's doctor warns unless its precmd hook is the final one
-# (mise/starship/plugins also register hooks, so it must come after them).
+# Initialize last so its chpwd hook is the final one (mise/starship/plugins also
+# register hooks). The hook is verified last in $chpwd_functions; the doctor's
+# extra precmd check still false-positives against starship, so silence the noise.
+export _ZO_DOCTOR=0
 eval "$(zoxide init zsh)"
 
 # ---- Local, machine-specific (not committed) ----

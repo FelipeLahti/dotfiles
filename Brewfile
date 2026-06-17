@@ -11,6 +11,7 @@ brew "fzf"                # fuzzy finder
 brew "zoxide"             # smarter cd
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
+brew "fzf-tab"            # fuzzy tab-completion menu (sourced by .zshrc)
 
 # ---- Modern CLI swaps ----
 brew "eza"                # ls
@@ -45,6 +46,7 @@ brew "common-fate/granted/granted"  # fast AWS profile/console switching
 
 # ---- macOS utilities ----
 brew "defaultbrowser"     # set the default browser from the CLI (bootstrap sets Chrome)
+brew "dockutil"           # manage the Dock layout from the CLI (bootstrap pins a lean set)
 
 # ---- GUI apps (casks) ----
 cask "ghostty"            # terminal
