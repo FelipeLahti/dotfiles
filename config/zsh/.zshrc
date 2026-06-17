@@ -106,6 +106,10 @@ alias gco="git checkout"
 alias gp="git push"
 alias gl="git pull"
 
+# ---- Claude Code ----
+alias cc="claude --dangerously-skip-permissions --chrome"
+alias cca="claude --permission-mode auto --chrome"
+
 # ---- Editor ----
 export EDITOR="zed --wait"
 export VISUAL="$EDITOR"

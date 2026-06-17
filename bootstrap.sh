@@ -142,4 +142,6 @@ cat <<'EOF'
   6. Run `claude` to authenticate Claude Code.
   7. Install Superset: download the macOS app from https://superset.sh, drag it
      to /Applications, then launch it and sign in.
+  8. Install Wispr Flow: download the macOS app from https://wisprflow.ai, drag it
+     to /Applications, then launch it and sign in.
 EOF
