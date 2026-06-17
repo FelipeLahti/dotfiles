@@ -1,0 +1,4 @@
+# SSH allowed signers — used by `git log --show-signature` / `git verify-commit`
+# to verify locally that commits were signed by a trusted key.
+# Format: <principal> [namespaces="git"] <key-type> <key>
+felipe.lahti@gmail.com namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPRFVw6P+B7dIlofuTCdgiQWqeemlpKQLF5CjRAIAXSW

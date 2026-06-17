@@ -54,6 +54,7 @@ link "config/starship.toml"     ".config/starship.toml"
 link "config/mise/config.toml"  ".config/mise/config.toml"
 link "config/ghostty/config"    ".config/ghostty/config"
 link "config/git/.gitconfig"    ".gitconfig"
+link "config/git/allowed_signers" ".config/git/allowed_signers"
 link "config/zed/settings.json" ".config/zed/settings.json"
 
 # 6. Language toolchains ------------------------------------------------------
