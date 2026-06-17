@@ -6,6 +6,12 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
 fi
 BREW_PREFIX="$(brew --prefix)"
 
+# ---- User binaries (~/.local/bin) ----
+# Tools installed for the current user only (e.g. the Claude Code CLI).
+if [[ -d "$HOME/.local/bin" ]]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
 # ---- History ----
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=50000
