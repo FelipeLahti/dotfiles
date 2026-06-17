@@ -89,6 +89,17 @@ defaults write com.apple.finder AppleShowAllFiles -bool true
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 defaults write com.apple.finder ShowPathbar -bool true
 
+# Caps Lock → Esc — the native "Modifier Keys" mapping. macOS keys this per
+# keyboard (vendor-product-type) in a -currentHost domain, so enumerate every
+# connected keyboard via hidutil and remap each. Takes effect at next login.
+log "Remapping Caps Lock → Esc…"
+caps=30064771129  # HID usage 0x700000039 (Caps Lock)
+esc=30064771113   # HID usage 0x700000029 (Escape)
+while read -r v p; do
+  defaults -currentHost write -g "com.apple.keyboard.modifiermapping.$((v))-$((p))-0" \
+    -array "{HIDKeyboardModifierMappingSrc=$caps;HIDKeyboardModifierMappingDst=$esc;}"
+done < <(hidutil list 2>/dev/null | awk '$4==1 && $5==6 {print $1, $2}' | sort -u)
+
 # Dock behavior
 defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock show-recents -bool false
