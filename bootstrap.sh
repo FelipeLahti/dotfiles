@@ -37,7 +37,16 @@ brew trust common-fate/granted >/dev/null 2>&1 || true
 log "Installing packages from Brewfile…"
 brew bundle --file="$DOTFILES/Brewfile"
 
-# 5. Symlink dotfiles ---------------------------------------------------------
+# 5. Claude Code (native installer, not via Homebrew) ------------------------
+# Official installer; lands in ~/.local/bin (on PATH via .zshrc). Superset has no
+# CLI installer — it's a manual .dmg download (see the final steps below).
+if ! command -v claude >/dev/null 2>&1 && [[ ! -x "$HOME/.local/bin/claude" ]]; then
+  log "Installing Claude Code…"
+  curl -fsSL https://claude.ai/install.sh | bash \
+    || warn "Claude Code install failed — see https://docs.claude.com/claude-code"
+fi
+
+# 6. Symlink dotfiles ---------------------------------------------------------
 link() {  # link <source-in-repo> <target-in-home>
   local src="$DOTFILES/$1" dest="$HOME/$2"
   mkdir -p "$(dirname "$dest")"
@@ -57,7 +66,7 @@ link "config/git/.gitconfig"    ".gitconfig"
 link "config/git/allowed_signers" ".config/git/allowed_signers"
 link "config/zed/settings.json" ".config/zed/settings.json"
 
-# 6. Language toolchains ------------------------------------------------------
+# 7. Language toolchains ------------------------------------------------------
 log "Installing language runtimes via mise…"
 mise install || warn "mise install had issues — run 'mise doctor' later"
 log "Enabling corepack (pnpm/yarn)…"
@@ -71,7 +80,7 @@ if ! rustup default >/dev/null 2>&1; then
 fi
 export PATH="$(brew --prefix rustup)/bin:$PATH"
 
-# 7. Sensible macOS defaults --------------------------------------------------
+# 8. Sensible macOS defaults --------------------------------------------------
 log "Applying macOS defaults…"
 defaults write NSGlobalDomain KeyRepeat -int 1         # repeat rate, below slider min (~15ms)
 defaults write NSGlobalDomain InitialKeyRepeat -int 12 # delay before repeat, below slider min (~180ms)
@@ -103,20 +112,20 @@ fi
 
 killall Finder Dock 2>/dev/null || true
 
-# 8. Default browser ----------------------------------------------------------
+# 9. Default browser ----------------------------------------------------------
 # macOS may pop a confirmation dialog the first time the default browser changes.
 if command -v defaultbrowser >/dev/null 2>&1; then
   log "Setting Chrome as the default browser (confirm the macOS prompt if it appears)…"
   defaultbrowser chrome || warn "Couldn't set Chrome as default — set it in System Settings ▸ Desktop & Dock"
 fi
 
-# 9. Colima (start container VM) ---------------------------------------------
+# 10. Colima (start container VM) ---------------------------------------------
 if ! colima status >/dev/null 2>&1; then
   log "Starting Colima (Docker runtime)…"
   colima start --cpu 4 --memory 8 --disk 60 || warn "Colima will start on first 'colima start'"
 fi
 
-# 10. FileVault check ---------------------------------------------------------
+# 11. FileVault check ---------------------------------------------------------
 if ! fdesetup status | grep -q "FileVault is On"; then
   warn "FileVault is OFF — enable disk encryption: System Settings ▸ Privacy & Security ▸ FileVault"
 fi
@@ -130,4 +139,7 @@ cat <<'EOF'
   3. AWS: `aws configure sso` to set up your SSO profiles, then `assume <profile>`.
   4. Restart your terminal (or `exec zsh`) to load everything.
   5. Sign in to Raycast, Obsidian, Zed; grant macOS permissions as prompted.
+  6. Run `claude` to authenticate Claude Code.
+  7. Install Superset: download the macOS app from https://superset.sh, drag it
+     to /Applications, then launch it and sign in.
 EOF
