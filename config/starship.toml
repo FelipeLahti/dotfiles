@@ -1,0 +1,42 @@
+# ~/.config/starship.toml  (symlinked)
+add_newline = true
+command_timeout = 1000
+
+format = """
+$directory$git_branch$git_status$nodejs$python$golang$rust$aws$cmd_duration
+$character"""
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold cyan"
+
+[git_branch]
+symbol = " "
+style = "bold purple"
+
+[git_status]
+style = "bold yellow"
+
+[cmd_duration]
+min_time = 2000
+format = "[ $duration]($style) "
+style = "bold yellow"
+
+[aws]
+format = '[$symbol($profile )(\($region\) )]($style)'
+symbol = "  "
+style = "bold orange"
+
+[nodejs]
+symbol = " "
+[python]
+symbol = " "
+[golang]
+symbol = " "
+[rust]
+symbol = " "

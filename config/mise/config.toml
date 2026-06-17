@@ -1,0 +1,20 @@
+# ~/.config/mise/config.toml  (global default tool versions)
+# Per-project: drop a `mise.toml` or `.tool-versions` in the repo root.
+
+[tools]
+node = "lts"
+python = "3.12"
+go = "latest"
+# Rust is managed by rustup (installed via Brewfile). Run `rustup-init` once.
+# If you'd rather mise own Rust too, uncomment:
+# rust = "stable"
+
+[settings]
+# Use uv for Python venv/install speed where mise integrates it.
+python.uv_venv_auto = true
+# Auto-install missing tools when entering a project dir.
+not_found_auto_install = true
+
+[env]
+# Enable corepack so `pnpm`/`yarn` resolve from each project's packageManager field.
+COREPACK_ENABLE_DOWNLOAD_PROMPT = "0"

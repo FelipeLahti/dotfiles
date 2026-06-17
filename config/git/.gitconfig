@@ -1,0 +1,63 @@
+# ~/.gitconfig  (symlinked)
+[user]
+	name = Felipe Lahti
+	email = felipe.lahti@gmail.com
+	# SSH commit signing key = your 1Password SSH public key.
+	# Get it: `op item get "SSH Key" --fields "public key"` or copy from 1Password app.
+	# Paste the full "ssh-ed25519 AAAA..." string below:
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPRFVw6P+B7dIlofuTCdgiQWqeemlpKQLF5CjRAIAXSW
+
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	# 1Password signs commits without keys on disk:
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true
+[tag]
+	gpgsign = true
+
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true
+	default = current
+[fetch]
+	prune = true
+[rebase]
+	autoStash = true
+[merge]
+	conflictstyle = zdiff3
+[diff]
+	colorMoved = default
+	algorithm = histogram
+
+[core]
+	pager = delta
+	editor = zed --wait
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	line-numbers = true
+	side-by-side = false
+[rerere]
+	enabled = true
+
+[alias]
+	st = status -sb
+	co = checkout
+	br = branch
+	cm = commit
+	lg = log --oneline --graph --decorate -20
+	last = log -1 HEAD --stat
+	undo = reset --soft HEAD~1
+	amend = commit --amend --no-edit
+
+# ---- Per-directory work identity ----
+# Put work repos under ~/work/ and create ~/dotfiles/config/git/.gitconfig-work
+# with your work name/email/signingkey. Uncomment to enable:
+# [includeIf "gitdir:~/work/"]
+# 	path = ~/dotfiles/config/git/.gitconfig-work

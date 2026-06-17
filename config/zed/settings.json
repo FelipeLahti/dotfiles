@@ -1,0 +1,25 @@
+// ~/.config/zed/settings.json  (symlinked)
+{
+  "theme": "Catppuccin Mocha",
+  "buffer_font_family": "JetBrainsMono Nerd Font",
+  "buffer_font_size": 14,
+  "ui_font_size": 15,
+  "vim_mode": false,
+  "format_on_save": "on",
+  "tab_size": 2,
+  "soft_wrap": "editor_width",
+  "telemetry": { "metrics": false },
+  "terminal": {
+    "font_family": "JetBrainsMono Nerd Font",
+    "shell": { "program": "/bin/zsh" }
+  },
+  "languages": {
+    "Python": {
+      "language_servers": ["pyright", "ruff"],
+      "format_on_save": "on"
+    },
+    "Go": { "tab_size": 4 },
+    "Rust": { "format_on_save": "on" }
+  },
+  "inlay_hints": { "enabled": true }
+}
